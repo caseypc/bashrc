@@ -255,20 +255,20 @@ txtrst='\e[0m'    # Text Reset
 
 # PS1="\n\[\e[30;1m\]\[\016\]l\[\017\](\[\e[34;1m\]\u@\h\[\e[30;1m\])-(\[\e[34;1m\]\j\[\e[30;1m\])-(\[\e[34;1m\]\@ \d\[\e[30;1m\])->\[\e[30;1m\]\n\[\016\]m\[\017\]-(\[\[\e[32;1m\]\w\[\e[30;1m\])-(\[\e[32;1m\]\$(/bin/ls -1 | /usr/bin/wc -l | /bin/sed 's: ::g') files, \$(/bin/ls -lah | /bin/grep -m 1 total | /bin/sed 's/total //')b\[\e[30;1m\])--> \[\e[0m\]"              # grey, cyan, green, w/black output (2-tier) w/ dir. info
 
-PROMPT_COMMAND=prepare_prompt
+#PROMPT_COMMAND=prepare_prompt
 
-prepare_prompt() {
-    if (( $? )); then
-        smiley='\[\e[37m\]You fucked up !!! \[\e[32m\]O_O\[\e[0m\]'
-    else
-        smiley='\[\e[32m\]^_^\[\e[0m\]'
-    fi
+#prepare_prompt() {
+#    if (( $? )); then
+#        smiley='\[\e[37m\]You fucked up !!! \[\e[32m\]O_O\[\e[0m\]'
+#    else
+#        smiley='\[\e[32m\]^_^\[\e[0m\]'
+#    fi
     #files=(*)
     #count=$#{files[@]}
     #count=$(ls -1 | wc -l | sed 's: ::g')
     #size=$(ls -lah | awk 'NR==1 {print $2} 1 {quit}')
     #size=$(ls -lah | grep -m 1 total | sed 's/total //')b
-}
+#}
 
 #PS1='\n\[\e[30;1m\]\[\017\](\[\e[34;1m\]\u@\h\[\e[30;1m\])-(\[\e[34;1m\]Jobs \j\[\e[30;1m\])-(\[\e[34;1m\]\ \d\[\e[30;1m\])->\[\e[30;1m\]\n\[\017\](\[\e[32;1m\]\w\[\e[30;1m\])-(\[\e[32;1m\]$count files, $size b\[\e[30;1m\])\n$smiley \[\e[30;1m\]--> \[\e[0m\]'
 
@@ -319,8 +319,10 @@ function pre_prompt {
 
 PROMPT_COMMAND=pre_prompt
 
-PS1="\e[36m┌─( \e[92m\u@\h\e[36m )─\${fill}─( \e[92m\$newPWD\e[36m )─( \e[92m\${filecount}files\e[36m )─( \e[92m\${dirsize}\e[36m )─< \
-\n└─( \e[92m\$(date \"+%I:%M %p\")\e[36m \$ )─>\e[0m "
+# PS1="\e[36m┌─( \e[92m\u@\h\e[36m )─\${fill}─( \e[92m\$newPWD\e[36m )─( \e[92m\${filecount}files\e[36m )─( \e[92m\${dirsize}\e[36m )─<\n└─( \e[92m\$\e[36m )─>\[\e[0m\]"
+
+PS1="\[\e[1;36m\]┌─( \[\e[1;92m\]\u@\H\[\e[1;36m\] )─\${fill}─( \[\e[1;92m\]\${newPWD}\[\e[1;36m\] )─( \[\e[1;92m\]\${filecount}files\[\e[1;36m\] )─( \[\e[1;92m\]\${dirsize}\[\e[1;36m\] )─<\n└─( \[\e[1;92m\]\$\[\e[1;36m\] )─>\[\e[0m\]"
+# PS1='\[\e[1;32m\]\u@\H:\[\e[m\] \[\e[1;37m\]\w\[\e[m\]\n\[\e[1;33m\]hist:\! \[\e[0;33m\] \[\e[1;31m\]jobs:\j \$\[\e[m\]
 ##################################################
 ##################################################
 ##################################################
@@ -397,64 +399,9 @@ ulimit -S -c 0                      # (core file size) don't want any coredumps
 unset MAILCHECK                     # don't want my shell to warn me of incoming mail
 
 
-if [ -d $HOME/Maildir/ ]; then
-    export MAIL=$HOME/Maildir/
-    export MAILPATH=$HOME/Maildir/
-    export MAILDIR=$HOME/Maildir/
-elif [ -f /var/mail/$USER ]; then
-    export MAIL="/var/mail/$USER"
-fi
-
-if [ "$TERM" = "screen" ]; then
-    export TERM=$TERMINAL
-fi
-
-
-##################################################
-# PATH                       #
-##################################################
-
-if [ "$UID" -eq 0 ]; then
-    PATH=$PATH:/usr/local:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-fi
-
-# remove duplicate path entries
-export PATH=$(echo $PATH | awk -F: '
-{ for (i = 1; i <= NF; i++) arr[$i]; }
-END { for (i in arr) printf "%s:" , i; printf "\n"; } ')
 
 # autocomplete ssh commands
 complete -W "$(echo `cat ~/.bash_history | egrep '^ssh ' | sort | uniq | sed 's/^ssh //'`;)" ssh
-
-
-
-
-##################################################
-# Startup programs               #
-##################################################
-
-# if [ "$USE_SCREEN" = "Y" ]; then
-#     if [ "$UID" -ne 0 ]; then
-#         if [ "$SHLVL" -eq 1 ]; then
-#             /usr/bin/screen -d -RR
-#         fi
-#     fi
-# fi
-
-# if [ -e "/usr/games/fortune" ]; then
-#     echo "Fortune: "
-#     /usr/games/fortune
-#     echo
-# fi
-
-# if [ -e "/usr/bin/uptime" ]; then
-#     echo "Uptime: ` /usr/bin/uptime`"
-# fi
-# echo
-# ~/bin/rc_sync.sh
-# $HOME/bin/motd.pl
-
-
 
 
 ##################################################
@@ -548,27 +495,9 @@ complete -W "$(echo `cat ~/.bash_history | egrep '^ssh ' | sort | uniq | sed 's/
 
 
 
-##################################################
-##################################################
-##################################################
-
-
-
-
-
-
-
-
 ######################################################################################################################################################
 ###### COMPLETIONS ###### COMPLETIONS ###### COMPLETIONS ###### COMPLETIONS ###### COMPLETIONS ###### COMPLETIONS ###### COMPLETIONS ###### COMPLETIONS
 ######################################################################################################################################################
-
-
-
-
-
-
-
 
 ##################################################
 # 'Universal' completion function        #
@@ -585,218 +514,9 @@ COMP_WORDBREAKS=${COMP_WORDBREAKS/=/}
 
 
 
-
-
-
-
-
 ######################################################################################################################################################
 ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS ###### FUNCTIONS
 ######################################################################################################################################################
-
-
-
-
-
-
-
-
-##################################################
-# Download all images from a 4chan thread    #
-##################################################
-
-function 4chanimages()
-{
-curl -s http://boards.4chan.org/wg/|sed -r 's/.*href="([^"]*).*/\1\n/g'|grep images|xargs wget
-}
-
-
-
-##################################################
-# Add a function you've defined to .bashrc   #
-##################################################
-
-function addfunction() { declare -f $1 >> ~/.bashrc ; }
-
-
-
-
-##################################################
-# Network information and IP address stuff   #
-##################################################
-
-###### get all IPs via ifconfig
-function allips()
-{
-ifconfig | awk '/inet / {sub(/addr:/, "", $2); print $2}'
-}
-
-###### clear iptables rules safely
-function clearIptables()
-{
-iptables -P INPUT ACCEPT; iptables -P FORWARD ACCEPT; iptables -P OUTPUT ACCEPT; iptables -F; iptables -X; iptables -L
-}
-
-
-
-
-###### check if a remote port is up using dnstools.com
-# (i.e. from behind a firewall/proxy)
-function cpo() { [[ $# -lt 2 ]] && echo 'need IP and port' && return 2; [[ `wget -q "http://dnstools.com/?count=3&checkp=on&portNum=$2&target=$1&submit=Go\!" -O - |grep -ic "Connected successfully to port $2"` -gt 0 ]] && echo OPEN || echo CLOSED; }
-
-
-
-###### geoip lookup (need geoip database: sudo apt-get install geoip-bin)
-function geoip() {
-geoiplookup $1
-}
-
-
-
-###### geoip information
-# requires 'html2text': sudo apt-get install html2text
-function geoiplookup() { curl -A "Mozilla/5.0" -s "http://www.geody.com/geoip.php?ip=$1" | grep "^IP.*$1" | html2text; }
-
-
-
-###### get IP address of a given interface
-# Example: getip lo
-# Example: getip eth0   # this is the default
-function getip()        { lynx -dump http://whatismyip.org/; }
-
-
-
-###### display private IP
-function ippriv()
-{
-    ifconfig eth0|grep "inet adr"|awk '{print $2}'|awk -F ':' '{print $2}'
-}
-
-
-
-###### ifconfig connection check
-function ips()
-{
-    if [ "$OS" = "Linux" ]; then
-        for i in $( /sbin/ifconfig | grep ^e | awk '{print $1}' | sed 's/://' ); do echo -n "$i: ";  /sbin/ifconfig $i | perl -nle'/dr:(\S+)/ && print $1'; done
-    elif [ "$OS" = "Darwin" ]; then
-        for i in $( /sbin/ifconfig | grep ^e | awk '{print $1}' | sed 's/://' ); do echo -n "$i: ";  /sbin/ifconfig $i | perl -nle'/inet (\S+)/ && print $1'; done
-    fi
-}
-
-
-
-###### geolocate a given IP address
-function ip2loc() { wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblICountry\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g'; }
-
-
-
-function ip2locall() {
-# best if used through a proxy, as ip2loc's free usage only lets you search a maximum of 20 times per day
-# currently set on using a proxy through tor; if don't want that, just comment out the two 'export..' and 'unset...' lines
-export http_proxy='http://localhost:8118'
-export https_proxy='http://localhost:8118'
-echo ""
-echo "Country:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblICountry\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Region (State, Province, Etc.):"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIRegion\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "City:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblICity\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Latitude:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblILatitude\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Longitude:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblILongitude\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "ZIP Code:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIZIPCode\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Time Zone:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblITimeZone\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Net Speed:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblINetSpeed\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "ISP:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIISP\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Domain:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIDomain\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "IDD Code:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIIDDCode\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Area Code:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIAreaCode\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Weather Station:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIWeatherStation\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "MCC:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIMCC\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "MNC:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIMNC\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Mobile Brand:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIMobileBrand\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-unset http_proxy
-unset https_proxy
-}
-
-
-
-function ip2locate() {
-# best if used through a proxy, as ip2loc's free usage only lets you search a maximum of 20 times per day
-# currently set on using a proxy through tor; if don't want that, just comment out the two 'export..' and 'unset...' lines
-export http_proxy='http://localhost:8118'
-export https_proxy='http://localhost:8118'
-echo ""
-echo "Country:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblICountry\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Region (State, Province, Etc.):"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblIRegion\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "City:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblICity\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Latitude:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblILatitude\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-echo "Longitude:"
-wget -qO - www.ip2location.com/$1 | grep "<span id=\"dgLookup__ctl2_lblILongitude\">" | sed 's/<[^>]*>//g; s/^[\t]*//; s/&quot;/"/g; s/</</g; s/>/>/g; s/&amp;/\&/g';
-echo ""
-unset http_proxy
-unset https_proxy
-}
-
-
-
-###### find the IP addresses that are currently online in your network
-function localIps()
-{
-for i in {1..254}; do
-    x=`ping -c1 -w1 192.168.1.$i | grep "%" | cut -d"," -f3 | cut -d"%" -f1 | tr '\n' ' ' | sed 's/ //g'`
-    if [ "$x" == "0" ]; then
-        echo "192.168.1.$i"
-    fi
-done
-}
-
-
-
-###### myip - finds your current IP if your connected to the internet
-function myip()
-{
-lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | awk '{ print $4 }' | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g'
-}
-
 
 
 ###### netinfo - shows network information for your system
@@ -810,63 +530,6 @@ echo "--------------- Network Information ---------------"
 myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
 echo "${myip}"
 echo "---------------------------------------------------"
-}
-
-
-
-###### check whether or not a port on your box is open
-function portcheck() { for i in $@;do curl -s "deluge-torrent.org/test-port.php?port=$i" | sed '/^$/d;s/<br><br>/ /g';done; }
-
-
-
-###### show ip
-# copyright 2007 - 2010 Christopher Bratusek
-function show_ip()
-{
-    case $1 in
-        *help | "" )
-            echo -e "\n${ewhite}Usage:\n"
-            echo -e "${eorange}show_ip${ewhite} |${egreen} <interface> ${eiceblue}[show ip-address for <interface>]\
-            \n${eorange}show_ip${ewhite} |${egreen} external${eiceblue} [show external ip address]\n"
-            tput sgr0
-        ;;
-        *external )
-            wget -q -O - http://showip.spamt.net/
-        ;;
-        * )
-            LANG=C /sbin/ifconfig $1 | grep 'inet addr:' | cut -d: -f2 | gawk '{ print $1}'
-        ;;
-    esac
-}
-
-
-
-###### show Url information
-# Usage:    url-info "ur"
-# This script is part of nixCraft shell script collection (NSSC)
-# Visit http://bash.cyberciti.biz/ for more information.
-# Modified by Silviu Silaghi (http://docs.opensourcesolutions.ro) to handle
-# more ip adresses on the domains on which this is available (eg google.com or yahoo.com)
-# Last updated on Sep/06/2010
-function url-info()
-{
-doms=$@
-if [ $# -eq 0 ]; then
-echo -e "No domain given\nTry $0 domain.com domain2.org anyotherdomain.net"
-fi
-for i in $doms; do
-_ip=$(host $i|grep 'has address'|awk {'print $4'})
-if [ "$_ip" == "" ]; then
-echo -e "\nERROR: $i DNS error or not a valid domain\n"
-continue
-fi
-ip=`echo ${_ip[*]}|tr " " "|"`
-echo -e "\nInformation for domain: $i [ $ip ]\nQuerying individual IPs"
- for j in ${_ip[*]}; do
-echo -e "\n$j results:"
-whois $j |egrep -w 'OrgName:|City:|Country:|OriginAS:|NetRange:'
-done
-done
 }
 
 
@@ -968,60 +631,6 @@ function avg() { awk "/$2/{sum += \$$1; lc += 1;} END {printf \"Average over %d 
 function chr() { printf \\$(($1/64*100+$1%64/8*10+$1%8)); }
 
 
-
-
-###### temperature conversion script that lets the user enter
-# a temperature in any of Fahrenheit, Celsius or Kelvin and receive the
-# equivalent temperature in the other two units as the output.
-# usage:    convertatemp F100 (if don't put F,C, or K, default is F)
-function convertatemp()
-{
-if uname | grep 'SunOS'>/dev/null ; then
-  echo "Yep, SunOS, let\'s fix this baby"
-  PATH="/usr/xpg4/bin:$PATH"
-fi
-if [ $# -eq 0 ] ; then
-  cat << EOF >&2
-Usage: $0 temperature[F|C|K]
-where the suffix:
-   F    indicates input is in Fahrenheit (default)
-   C    indicates input is in Celsius
-   K    indicates input is in Kelvin
-EOF
-fi
-unit="$(echo $1|sed -e 's/[-[[:digit:]]*//g' | tr '[:lower:]' '[:upper:]' )"
-temp="$(echo $1|sed -e 's/[^-[[:digit:]]*//g')"
-case ${unit:=F}
-in
-  F ) # Fahrenheit to Celsius formula:  Tc = (F -32 ) / 1.8
-  farn="$temp"
-  cels="$(echo "scale=2;($farn - 32) / 1.8" | bc)"
-  kelv="$(echo "scale=2;$cels + 273.15" | bc)"
-  ;;
-  C ) # Celsius to Fahrenheit formula: Tf = (9/5)*Tc+32
-  cels=$temp
-  kelv="$(echo "scale=2;$cels + 273.15" | bc)"
-  farn="$(echo "scale=2;((9/5) * $cels) + 32" | bc)"
-  ;;
-  K ) # Celsius = Kelvin + 273.15, then use Cels -> Fahr formula
-  kelv=$temp
-  cels="$(echo "scale=2; $kelv - 273.15" | bc)"
-  farn="$(echo "scale=2; ((9/5) * $cels) + 32" | bc)"
-esac
-echo "Fahrenheit = $farn"
-echo "Celsius    = $cels"
-echo "Kelvin     = $kelv"
-}
-
-
-
-###### convert hexadecimal numbers to decimals
-function dec()      { printf "%d\n" $1; }
-
-
-
-###### convert decimals to hexadecimal numbers
-function hex()      { printf "0x%08x\n" $1; }
 
 
 
@@ -1144,22 +753,6 @@ function seconds-convert-part()
 
 
 
-
-##################################################
-# Ask                        #
-##################################################
-
-function ask()
-{
-    echo -n "$@" '[y/n] ' ; read ans
-    case "$ans" in
-        y*|Y*) return 0 ;;
-        *) return 1 ;;
-    esac
-}
-
-
-
 ##################################################
 # Get the headlines of an atom feed      #
 ##################################################
@@ -1169,143 +762,6 @@ function atomtitles()
 curl --silent $1 | xmlstarlet sel -N atom="http://www.w3.org/2005/Atom" -t -m /atom:feed/atom:entry -v atom:title -n
 }
 
-
-
-
-
-
-############ DVD ############
-
-###### DVD to ISO
-function dvd2iso()
-{
-# to get desired device
-df -h -x tmpfs -x usbfs
-echo -n "Using the information in the terminal window, please enter the appropriate DVD drive:
-"
-read DVDDEVICE
-echo -n "Please enter a name for the ISO file you will create:
-"
-read XVIDNAME
-pv "$DVDDEVICE" | dd of="$XVIDNAME".iso
-}
-
-
-
-alias dvdcopy='dvd2iso'
-
-
-
-###### DVD to MPG
-alias dvd2mpeg='dvd2mpg'
-
-
-function dvd2mpg()
-{
-# to get desired device
-df -h -x tmpfs -x usbfs
-echo -n "Using the information in the terminal window, please enter the appropriate DVD drive:
-"
-read DVDDEVICE
-# to get desired title on dvd
-# requires lsdvd: sudo apt-get install lsdvd
-lsdvd "$DVDDEVICE"
-echo -n "Using the information in the terminal window, please enter the title number you will convert (usually the longest one):
-"
-read DVDTITLE
-echo -n "Please enter a name for the MPG/MPEG file you will convert:
-"
-read MPEGNAME
-mplayer dvd://"$DVDTITLE" -dumpstream -alang es -dumpfile "$MPEGNAME".mpg
-}
-
-
-
-
-############ Audio ############
-
-###### rip audio from video
-# ("$1" for output file & "$2" for input file)
-function audioextract()
-{
-mplayer -ao pcm -vo null -vc dummy -dumpaudio -dumpfile "$1" "$2"
-}
-
-
-alias flvaudio='ffmpeg -i "$1" -f mp3 -vn -acodec copy output.mp3'          # extract sound from flv & make mp3
-
-
-
-###### fix MP3 tags encoding (to UTF-8)
-# batch fixes all MP3s in one directory
-function mp3_tagging()
-{
-find . -iname "*.mp3" -execdir mid3iconv -e <encoding> {} \;
-}
-
-
-
-alias wma2mp3='for f in *.wma; do ffmpeg -i "$f" -ab 128k "${f%.wma}.mp3" -ab 128K; done'       # convert wma to mp3@128k
-
-
-
-##################################################
-# ~/ functions                   #
-##################################################
-
-function backupsfolder()
-{
-    if [ -d $HOME/backups_html ]; then
-        chown -R $USER:www-data $HOME/backups_html
-        chmod 755 $HOME/backups_html
-        find $HOME/backups_html/ -type d -exec chmod 775 {} \;
-        find $HOME/backups_html/ -type f -exec chmod 664 {} \;
-        chmod 755 $HOME
-    fi
-}
-
-
-
-function private()
-{
-    find $HOME -type d -exec chmod 700 {} \;
-    find $HOME -type f -exec chmod 600 {} \;
-    find $HOME/bin -type f -exec chmod +x {} \;
-    find $HOME/.dropbox-dist/dropbox* -type f -exec chmod +x {} \;
-}
-
-
-
-function publicfolder()
-{
-    if [ -d $HOME/public_html ]; then
-        chown -R $USER:www-data $HOME/public_html
-        chmod 755 $HOME/public_html
-        find $HOME/public_html/ -type d -exec chmod 775 {} \;
-        find $HOME/public_html/ -type f -exec chmod 664 {} \;
-        chmod 755 $HOME
-    fi
-}
-
-
-
-function setperms()
-{
-    echo "setting proper permissions in ~/"
-    private
-    public
-}
-
-
-
-function wwwrc()
-{
-    alias mv="mv"
-    mv -f ~/.[a-z]*.html ~/public_html/
-    chmod 644 ~/public_html/.[a-z]*.html
-    chown $USER:www-data ~/public_html/.[a-z]*.html
-    alias mv="mv -i"
-}
 
 
 
@@ -1332,8 +788,6 @@ function bak()
 {
   cp $1 $1_`date +%H:%M:%S_%d-%m-%Y`
 }
-
-
 
 
 
@@ -1674,155 +1128,6 @@ function md5()
 
 
 
-##################################################
-# Quick reference color charts  & color stuff    #
-##################################################
-
-###### shows a gui color chart
-function color-picker()
-{
-# for GNOME2 only
-# sudo apt-get install python-gtkmozembed xulrunner-2.0
-# also requires: "~/.gnome2/nemo-scripts/.colorchart/view.html"
-echo "When you are finished, press "Control C" to continue..."
-cat > "/tmp/color-picker.py" <<"End-of-message"
-#!/usr/bin/python
-import os
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gtkmozembed
-homedir = os.path.expanduser('~')
-try:
-    from win32com.shell import shellcon, shell
-    homedir = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-except ImportError:
-    homedir = os.path.expanduser("~/.gnome2/nemo-scripts/.colorchart/view.html")
-class ColorChart:
-    def __init__(self):
-                self.moz = gtkmozembed.MozEmbed()
-        box = gtk.VBox(False,0)
-        win = gtk.Window()
-        win.add(box)
-        hbox = gtk.HBox(False,0)
-                box.pack_start(hbox,False,False)
-                hbox.show()
-        box.pack_start(self.moz,True,True,0)
-                self.moz.show()
-        self.moz.load_url(homedir)
-                self.moz.set_size_request(650,550)
-        title=self.moz.get_title()
-        win.set_title("RGB/HEX Color Picker")
-        win.show_all()
-if __name__ == "__main__":
-    ColorChart()
-    gtk.main()
-End-of-message
-chmod +x "/tmp/color-picker-.py"
-/usr/bin/python "/tmp/color-picker.py"
-/bin/rm "/tmp/color-picker.py"
-}
-
-
-
-###### shows a gui color chart
-# function color-picker()
-# {
-# # for GNOME3 only
-# # sudo apt-get install python-webkit
-# # also requires: "~/.gnome2/nemo-scripts/.colorchart/view.html"
-# echo "When you are finished, press "Control C" to continue..."
-# cat > "/tmp/color-picker.py" <<"End-of-message"
-# #!/usr/bin/python
-# import os
-# import pygtk
-# pygtk.require('2.0')
-# import gtk
-# import webkit
-# homedir = os.path.expanduser('~')
-# try:
-#     from win32com.shell import shellcon, shell
-#     homedir = shell.SHGetFolderPath(0, shellcon.CSIDL_APPDATA, 0, 0)
-# except ImportError:
-#     homedir = os.path.expanduser("~/.gnome2/nemo-scripts/.colorchart/view.html")
-# class ColorChart:
-#   def __init__(self):
-#                 self.moz = webkit.WebView()
-#       box = gtk.VBox(False,0)
-#       win = gtk.Window()
-#       win.add(box)
-#       hbox = gtk.HBox(False,0)
-#                 box.pack_start(hbox,False,False)
-#                 hbox.show()
-#       box.pack_start(self.moz,True,True,0)
-#                 self.moz.show()
-#       self.moz.open(homedir)
-#                 self.moz.set_size_request(650,550)
-#       title=self.moz.get_title()
-#       win.set_title("RGB/HEX Color Picker")
-#       win.show_all()
-# if __name__ == "__main__":
-#   ColorChart()
-#   gtk.main()
-# End-of-message
-# chmod +x "/tmp/color-picker-.py"
-# /usr/bin/python "/tmp/color-picker.py"
-# /bin/rm "/tmp/color-picker.py"
-# }
-
-
-
-###### takes a name of a color and some text and then echoes out the text in the named color
-# Usage:    colorize_text "color" "whatever text"
-function colorize-text()
-{
-b='[0;30m'
-# Implement command-line options
-while getopts "nr" opt
- do
-  case $opt in
-   n  )  o='-n' ;;
-   r  )  b=''   ;;
-  esac
- done
-shift $(($OPTIND - 1))
-# Set variables
-col=$1
-shift
-text="$*"
-# Set a to console color code
-case $col in
- 'black'  ) a='[0;30m' ;;
- 'blue'   ) a='[0;34m' ;;
- 'green'  ) a='[0;32m' ;;
- 'cyan'   ) a='[0;36m' ;;
- 'red'    ) a='[0;31m' ;;
- 'purple' ) a='[0;35m' ;;
- 'brown'  ) a='[0;33m' ;;
- 'ltgray' ) a='[0;37m' ;;
- 'white'  ) a='[1;30m' ;;
- 'ltblue' ) a='[1;34m' ;;
- 'ltgreen') a='[1;32m' ;;
- 'ltcyan' ) a='[1;36m' ;;
- 'ltred'  ) a='[1;31m' ;;
- 'pink'   ) a='[1;35m' ;;
- 'yellow' ) a='[1;33m' ;;
- 'gray'   ) a='[1;37m' ;;
-esac
-# Display text in designated color, no newline
-echo -en "\033$a$text"
-# If 'b' switch not on, restore color to black
-if [ -n $b ]
- then
-  echo -en "\033$b"
-fi
-# If 'n' switch on, do not display final newline
-# otherwise output newline
-echo $o
-}
-
-
-
 ###### shows the colors in a kewl way...partially stolen from HH
 function colors()
 {
@@ -1838,21 +1143,6 @@ function colors()
         done
         echo -e "$line1\n$line2"
     done
-    echo ""
-    echo "# Example:"
-    echo "#"
-    echo "# Type a Blinkin TJEENARE in Swedens colours (Yellow on Blue)"
-    echo "#"
-    echo "#           ESC"
-    echo "#            |  CD"
-    echo "#            |  | CD2"
-    echo "#            |  | | FG"
-    echo "#            |  | | |  BG + m"
-    echo "#            |  | | |  |         END-CD"
-    echo "#            |  | | |  |            |"
-    echo "# echo -e '\033[1;5;33;44mTJEENARE\033[0m'"
-    echo "#"
-    echo "# Sedika Signing off for now ;->"
 }
 
 
@@ -5434,7 +4724,6 @@ function zipf() { zip -r "$1".zip "$1" ; }
 ##################################################
 ##################################################
 ##################################################
-
 
 
 
