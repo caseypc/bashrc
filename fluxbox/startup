@@ -1,0 +1,94 @@
+#!/bin/sh
+#
+# fluxbox startup-script:
+#
+# Lines starting with a '#' are ignored.
+#
+# Set your favourite wallpaper
+# fbsetbg -f /home/zoe/pictures/wallpaper.png
+#
+# This sets a darkslategray background
+fbsetroot -solid darkslategray
+#
+# Sets last wallpaper
+# fbsetbg -l
+# 
+# This shows the fluxbox-splash-screen
+# fbsetbg -C /usr/share/fluxbox/splash.jpg
+#
+# Other examples. Check man xset for details.
+#
+# Increase the keyboard repeat-rate:
+# xset r rate 195 35
+#
+# Your own fonts-dir:
+# xset +fp "/home/zoe/.fonts"
+#
+# Your favourite mouse cursor:
+# xsetroot -cursor_name right_ptr
+#
+# Change your keymap:
+xmodmap "/home/casey/.Xmodmap"
+
+# Applications you want to run with fluxbox.
+#
+# unclutter -idle 2 &
+# wmnd &
+# wmsmixer -w &
+# idesk &
+
+# Load the GNOME settings manager so the GNOME applications
+#  use their proper styles and themes.
+
+gnome-settings-daemon &
+
+# Load the GNOME power manager so resume & suspend
+# settings work just as they would in GNOME
+
+gnome-power-manager &
+
+# Load the volume manager so GNOME applications
+# get their sound levels right as they would in GNOME
+# gnome-volume-control-applet &
+gnome-sound-applet &
+
+# Load the Network-Manager Applet so we can
+# manage networks, WiFi etc. just as we would
+# be able to on GNOME
+
+nm-applet &
+
+# Load the GNOME bluetooth stuff so we
+# can work with Bluetooth just as we would
+# be able to on GNOME
+# bluetooth-applet &
+
+xscreensaver -no-splash &
+
+
+# Debian-local change:
+#   - fbautostart has been added with a quick hack to check to see if it
+#     exists. If it does, we'll start it up by default.
+which fbautostart > /dev/null
+if [ $? -eq 0 ]; then
+    fbautostart
+fi
+
+# And last but not least we start fluxbox.
+# Because it is the last app you have to run it with ''exec'' before it.
+
+exec fluxbox &
+
+
+fbpid=$!
+
+sleep 5
+{ 
+compton &
+conky -c ~/.conky/conky-DATA/.conkyrc-laptop &
+} &
+
+wait $fbpid
+
+# or if you want to keep a log:
+# exec fluxbox -log "/home/casey/.fluxbox/log"
