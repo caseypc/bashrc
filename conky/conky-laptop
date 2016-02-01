@@ -1,0 +1,153 @@
+######################
+# — Conky settings — #
+######################
+background no
+update_interval 1
+
+cpu_avg_samples 2
+net_avg_samples 2
+
+override_utf8_locale yes
+
+#avoid flicker
+double_buffer yes
+no_buffers yes
+
+text_buffer_size 2048
+imlib_cache_size 0
+
+
+#to prevent window from moving
+use_spacer none
+# minimum_size 1600 0
+minimum_size 0 0
+maximum_width 320
+
+
+#############################
+# — Window specifications — #
+#############################
+own_window yes
+own_window_type normal
+# own_window_type dock
+own_window_transparent yes
+own_window_colour 080808
+# own_window_colour 191919
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
+own_window_argb_visual no
+own_window_argb_value 0
+
+#borders
+draw_borders no
+# border_margin 3
+border_inner_margin 1
+border_outer_margin 1
+
+#position
+gap_x 3
+gap_y 3
+# alignment top_left
+alignment top_right
+# alignment bottom_middle
+
+#########################
+# — Graphics settings — #
+#########################
+draw_shades no
+draw_outline no
+draw_borders no
+# draw_graph_borders no
+draw_graph_borders yes
+
+
+#####################
+# — Text settings — #
+#####################
+uppercase no
+use_xft yes
+xftalpha 1
+#xftfont mintsmild:size=7
+# xftfont Dejavu Sans:size=7
+xftfont Terminus:size=9
+
+
+######################
+# — Color settings — #
+######################
+default_color 8f8f8f
+#default_color 0f0f0f
+default_shade_color bfbfbf
+#default_shade_color 000000
+
+
+
+# Color
+default_color CCCCCC
+color1 b3b3b3
+color2 0088cc
+color3 006fa6
+color4 005580
+color5 333333
+color6 F9FF00
+color7 fc0134
+
+# ${color1}Core 1: ${cpubar cpu1 5,30} ${color2}${cpu cpu1}% ${color1} \
+# ${color1}Core 2: ${cpubar cpu2 5,30} ${color2}${cpu cpu2}% ${color1} \
+# ${color1}Core 3: ${cpubar cpu3 5,30} ${color2}${cpu cpu3}% \
+# ${color1}Core 4: ${cpubar cpu4 5,30} ${color2}${cpu cpu4}%
+# ${color1}Core 5: ${cpubar cpu5 5,30} ${color2}${cpu cpu5}%  \
+# ${color1}Core 6: ${cpubar cpu6 5,30} ${color2}${cpu cpu6}%  \
+# ${color1}Core 7: ${cpubar cpu7 5,30} ${color2}${cpu cpu7}% \
+# ${color1}Core 8: ${cpubar cpu8 5,30} ${color2}${cpu cpu8}% ${color5} |  \
+# ${color1}Battery: ${color2}${battery} ${battery_bar 3,70} ${battery_percent}%
+
+TEXT
+${alignc}${color2}${time %a, %b %d %Y, %I:%M %p}
+    ${color}${stippled_hr}
+    ${color1}Kernel: ${color2}$kernel ${alignr}${color1}UpTime: ${color2}$uptime
+    ${color1}Battery: ${color2}${execi 6 acpi -b | awk "{print $1}" | sed 's/\([^:]*\): \([^,]*\), \([0-9]*\)%.*/\2/'} ${battery_bar 3,70} ${execi 6 acpi -b | awk "{print $1}" | sed 's/\([^:]*\): \([^,]*\), \([0-9]*\)%.*/\3/'}%
+    ${color1}Entropy: ${color2}${entropy_bar 3,70} ${entropy_perc}%
+
+${color}CPU ${stippled_hr}
+    ${color5}${cpugraph cpu0 50,292 006699 fc0134}
+    ${voffset -52}${goto 35}${color1}Usage: ${color2}${cpu cpu0}% ${goto 255}${color1}Temp: ${color2}${acpitemp}C°
+    ${voffset 40}${color1}Load: ${color2}$loadavg ${alignr}${color1}Processes: ${color2}$processes ${color1}Running: ${color2}$running_processes
+
+${color1}MEMORY ${stippled_hr}
+
+    ${color1}Ram: ${color2}${memperc}% ${membar 3,47} ${alignr}$mem / $memmax
+    ${color1}Swap: ${color2}${swapperc}% ${swapbar 3,46} ${alignr}$swap / $swapmax
+
+${color1}DISKS ${stippled_hr}
+
+    ${color1}Root: ${color2}${fs_free_perc /}% ${fs_bar 10,190 /}${goto 130}${color}${fs_free /}  / ${fs_size /} ${alignr}${color2}${diskiograph sda2 10,40}
+    ${color1}Home: ${color2}${fs_free_perc /home}% ${fs_bar 10,190 /home}${goto 130}${color}${fs_free /home}  / ${fs_size /home} ${alignr}${color2}${diskiograph sda4 10,40}
+
+${color1}NETWORK ${stippled_hr}
+
+    ${color1}Down: ${color2}${downspeed wlan0} ${alignr}${color1}Up: ${color2}${upspeed wlan0}
+    ${color5}${downspeedgraph wlan0 40,140 ffcc00 ff0000} ${alignr}${color5}${upspeedgraph wlan0 40,140 99cc33 006600}
+    ${color1}Total: ${color2}${totaldown wlan0} ${alignr}${color1}Total: ${color2}${totalup wlan0}
+
+    ${color1}Address: ${color2}${addr wlan0}${alignr}${color1}TCP Connections: ${color2}${tcp_portmon 1 65535 count}
+    ${if_gw}${color1}Gateway: ${color2}${gw_ip}${alignr}${color1}DNS: ${color2}${nameserver}${endif}
+
+${color1}TOP CPU PROCESSES ${stippled_hr}
+    ${color1}NAME${alignr 110}PID${alignr 60}CPU%${alignr 20}MEM%
+    ${color7}${lua_parse top cpu 1}${top name 1}${alignr 80}${top pid 1}${alignr 45}${top cpu 1}${alignr 20}${top mem 1}
+    ${color2}${lua_parse top cpu 2}${top name 2}${alignr 80}${top pid 2}${alignr 45}${top cpu 2}${alignr 20}${top mem 2}
+    ${color3}${lua_parse top cpu 3}${top name 3}${alignr 80}${top pid 3}${alignr 45}${top cpu 3}${alignr 20}${top mem 3}
+    ${color4}${lua_parse top cpu 4}${top name 4}${alignr 80}${top pid 4}${alignr 45}${top cpu 4}${alignr 20}${top mem 4}
+
+${color1}TOP MEM PROCESSES ${stippled_hr}
+    ${color1}NAME${alignr 110}PID${alignr 60}CPU%${alignr 20}MEM%
+    ${color7}${lua_parse top mem 1}${top_mem name 1}${alignr 80}${top_mem pid 1}${alignr 45}${top_mem cpu 1}${alignr 20}${top_mem mem 1}
+    ${color2}${lua_parse top mem 2}${top_mem name 2}${alignr 80}${top_mem pid 2}${alignr 45}${top_mem cpu 2}${alignr 20}${top_mem mem 2}
+    ${color3}${lua_parse top mem 3}${top_mem name 3}${alignr 80}${top_mem pid 3}${alignr 45}${top_mem cpu 3}${alignr 20}${top_mem mem 3}
+    ${color4}${lua_parse top mem 4}${top_mem name 4}${alignr 80}${top_mem pid 4}${alignr 45}${top_mem cpu 4}${alignr 20}${top_mem mem 4}
+
+${color1}/var/log/syslog ${stippled_hr}
+    ${color2}${execi 6 tail -n2 /var/log/syslog | fold -w130}
+
+${color1}/var/log/apache2/error.log ${stippled_hr}
+    ${color2}${execi 6 tail -n2 /var/log/apache2/error.log | fold -w130}
